@@ -13,25 +13,23 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const dispatch = useDispatch();
 
- useEffect(() => {
-  const fetchToken = async () => {
-    try {
-      const response = await axios({
+  useEffect(() => {
+    const fetchToken = async () => {
+      await axios({
         method: "get",
         url: `${process.env.REACT_APP_API_URL}jwtid`,
         withCredentials: true,
-      });
+      })
+        .then((res) => {
+          setUid(res.data);
+        })
+        .catch((err) => console.log("No token"));
+    };
+    fetchToken();
 
-      if (res.data.user) {
-        setUid(res.data.user);
-        dispatch(getUser(res.data.user));
-      }
-    } catch (err) {
-      console.log("No token");
-    }
-  };
-  fetchToken();
-}, []);
+    if (uid) dispatch(getUser(uid))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uid]);
 
   return (
     <BrowserRouter>
