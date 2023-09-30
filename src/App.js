@@ -13,23 +13,31 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      await axios({
-        method: "get",
-        url: `${process.env.REACT_APP_API_URL}jwtid`,
-        withCredentials: true,
-      })
-        .then((res) => {
-          setUid(res.data);
-        })
-        .catch((err) => console.log("No token"));
-    };
-    fetchToken();
+ useEffect(() => {
+  const fetchToken = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}jwtid`, {
+        method: "GET",
+        credentials: "include", // Active le mode "credentials" pour permettre les cookies
+      });
 
-    if (uid) dispatch(getUser(uid))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid]);
+      if (response.ok) {
+        const data = await response.json();
+        setUid(data);
+      } else {
+        console.log("No token");
+      }
+    } catch (error) {
+      console.error("Error fetching token:", error);
+    }
+  };
+
+  fetchToken();
+
+  if (uid) dispatch(getUser(uid));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [uid]);
+
 
   return (
     <BrowserRouter>
