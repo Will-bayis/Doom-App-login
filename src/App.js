@@ -22,9 +22,9 @@ const App = () => {
         withCredentials: true,
       });
 
-      if (response.data.user) {
-        setUid(response.data.user);
-        dispatch(getUser(response.data.user));
+      if (res.data.user) {
+        setUid(res.data.user);
+        dispatch(getUser(res.data.user));
       }
     } catch (err) {
       console.log("No token");
